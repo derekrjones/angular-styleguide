@@ -39,55 +39,43 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
 ## Single Responsibility
 
-### Rule of 1
+### Rule of One
 ###### [Style [Y001](#style-y001)]
 
   - Define 1 component per file.
 
-  The following example defines the `app` module and its dependencies, defines a controller, and defines a factory all in the same file.
+  **(AVOID)** The following example defines the `app.todo` module, a factory, and a directive all in the same file.
 
   ```javascript
-  /* avoid */
-  angular
-      .module('app', ['ngRoute'])
-      .controller('SomeController', SomeController)
-      .factory('someFactory', someFactory);
-
-  function SomeController() { }
-
-  function someFactory() { }
+  // todo/index.js
+  module.exports = angular
+    .module('app.todo', [])
+    .factory('TodoFactory', TodoFactory)
+    .directive('todoList', TodoListDirective)
+  
+  function TodoFactory() { }
+  
+  function TodoListDirective() { }
   ```
 
-  The same components are now separated into their own files.
+  **(RECOMMENDED)** The same components are now separated into their own files.
 
   ```javascript
-  /* recommended */
-
-  // app.module.js
-  angular
-      .module('app', ['ngRoute']);
-  ```
-
-  ```javascript
-  /* recommended */
-
-  // some.controller.js
-  angular
-      .module('app')
-      .controller('SomeController', SomeController);
-
-  function SomeController() { }
+  // todo/index.js
+  module.exports = angular
+    .module('app.todo', [])
+    .factory('TodoFactory', require('./Todo.factory'))
+    .directive('todoList', require('./todo-list.directive'))
   ```
 
   ```javascript
-  /* recommended */
+  // todo/Todos.js
+  module.exports = function TodoFactory() { }
+  ```
 
-  // someFactory.js
-  angular
-      .module('app')
-      .factory('someFactory', someFactory);
-
-  function someFactory() { }
+  ```javascript
+  // todo/todo-list.directive.js
+  module.exports = function TodoListDirective() { }
   ```
 
 **[Back to top](#table-of-contents)**
