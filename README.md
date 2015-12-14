@@ -3216,7 +3216,8 @@ _tldr; Use this guide. Attributions are appreciated._
 
 ### Copyright
 
-Copyright (c) 2014-2015 [John Papa](http://johnpapa.net)
+Copyright (c) 2015 Derek Jones
+Copyright (c) 2014-2015 [John Papa](http://johnpapa.net) for original portions of [johnpapa/angular-styleguide](https://github.com/johnpapa/angular-styleguide)
 
 ### (The MIT License)
 Permission is hereby granted, free of charge, to any person obtaining
