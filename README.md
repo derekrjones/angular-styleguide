@@ -41,7 +41,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Rule of One
 ###### [Style [Y010](#style-y010)]
 
-  - Define 1 component per file.
+  - Define 1 component per file and wire them in `index.js`
 
   **(AVOID)** The following example defines the `app.todo` module, a factory, and a directive all in the same file.
 
@@ -85,113 +85,82 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ###### [Style [Y020](#style-y020)]
 
   - Use unique naming conventions with separators for sub-modules.
+  - **(RECOMMENDED)** Module name should reflect directory
+  
+  *Why?*: Unique names help avoid module name collisions. Separators help define modules and their submodule hierarchy. For example `app` may be your root module while `app.todo` and `app.users` may be modules that are used as dependencies of `app`.
 
-  *Why?*: Unique names help avoid module name collisions. Separators help define modules and their submodule hierarchy. For example `app` may be your root module while `app.dashboard` and `app.users` may be modules that are used as dependencies of `app`.
-
-### Definitions (aka Setters)
+  ```
+  app
+  ├── index.js                      // 'app'
+  └─┬ todo
+    ├── index.js                    // 'app.todo'
+    ├── Todo.factory.js
+    ├─┬ todo-list
+    │ ├── index.js                  // 'app.todo.todo-list'
+    │ ├── todo-list.directive.js
+    │ ├── todo-list.html
+    │ └── style.scss
+    └─┬ todo-item
+  ```
+  
+### Definitions
 ###### [Style [Y021](#style-y021)]
 
-  - Declare modules without a variable using the setter syntax.
+  - Always export modules directly.
 
-  *Why?*: With 1 component per file, there is rarely a need to introduce a variable for the module.
-
+  **(AVOID)**
   ```javascript
-  /* avoid */
-  var app = angular.module('app', [
-      'ngAnimate',
-      'ngRoute',
-      'app.shared',
-      'app.dashboard'
-  ]);
-  ```
-
-  Instead use the simple setter syntax.
-
-  ```javascript
-  /* recommended */
   angular
-      .module('app', [
-          'ngAnimate',
-          'ngRoute',
-          'app.shared',
-          'app.dashboard'
-      ]);
+    .module('app', [
+      require('angular-bootstrap').name,
+      require('./todo').name
+    ])
+  ```
+  *Why?*: If you don't export you can't use `require('./my-module').name` to require the module as a dependency.
+
+  **(AVOID)**
+  ```javascript
+  var app = angular.module('app', [
+    require('angular-bootstrap').name,
+    require('./todo').name
+  ]);
+  module.exports = app;
+  ```
+  *Why?*: With 1 module per file, there is never a need to assign to a variable other than `module.exports`.
+
+  **(RECOMMENDED)**
+  ```javascript
+  module.exports = angular
+    .module('app', [
+      require('angular-bootstrap').name,
+      require('./todo').name
+    ])
   ```
 
-### Getters
+### Dependencies
 ###### [Style [Y022](#style-y022)]
 
-  - When using a module, avoid using a variable and instead use chaining with the getter syntax.
+  - When adding dependencies, use `require().name` syntax instead of a string.
 
-  *Why?*: This produces more readable code and avoids variable collisions or leaks.
-
+  **(AVOID)**
   ```javascript
-  /* avoid */
-  var app = angular.module('app');
-  app.controller('SomeController', SomeController);
-
-  function SomeController() { }
+  module.exports = angular
+    .module('app', [
+      'ui-bootstrap',
+      'app.todo'
+    ])
   ```
+  
+  *Why?*: Requiring sub-modules ensures they are added to the bundle.
+  *Why?*: Vendor modules can be shimmed. This allows them to be loaded from a cdn and avoids dependencies being snuck in.
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
-  angular
-      .module('app')
-      .controller('SomeController', SomeController);
-
-  function SomeController() { }
-  ```
-
-### Setting vs Getting
-###### [Style [Y023](#style-y023)]
-
-  - Only set once and get for all other instances.
-
-  *Why?*: A module should only be created once, then retrieved from that point and after.
-
-  ```javascript
-  /* recommended */
-
-  // to set a module
-  angular.module('app', []);
-
-  // to get a module
-  angular.module('app');
-  ```
-
-### Named vs Anonymous Functions
-###### [Style [Y024](#style-y024)]
-
-  - Use named functions instead of passing an anonymous function in as a callback.
-
-  *Why?*: This produces more readable code, is much easier to debug, and reduces the amount of nested callback code.
-
-  ```javascript
-  /* avoid */
-  angular
-      .module('app')
-      .controller('DashboardController', function() { })
-      .factory('logger', function() { });
-  ```
-
-  ```javascript
-  /* recommended */
-
-  // dashboard.js
-  angular
-      .module('app')
-      .controller('DashboardController', DashboardController);
-
-  function DashboardController() { }
-  ```
-
-  ```javascript
-  // logger.js
-  angular
-      .module('app')
-      .factory('logger', logger);
-
-  function logger() { }
+  module.exports = angular
+    .module('app', [
+      require('angular-bootstrap').name,    // shimmed using bower name
+      require('./todo').name
+    ])
   ```
 
 **[Back to top](#table-of-contents)**
