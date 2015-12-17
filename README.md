@@ -85,9 +85,10 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ###### [Style [Y020](#style-y020)]
 
   - Use unique naming conventions with separators for sub-modules.
-  - **(RECOMMENDED)** Module name should reflect directory
   
   *Why?*: Unique names help avoid module name collisions. Separators help define modules and their submodule hierarchy. For example `app` may be your root module while `app.todo` and `app.users` may be modules that are used as dependencies of `app`.
+  
+  > Module names should reflect directory structure
 
   ```
   app
@@ -579,7 +580,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Services are instantiated with the `new` keyword, use `this` for public methods and variables. Since these are so similar to factories, use a factory instead for consistency.
 
-    Note: [All Angular services are singletons](https://docs.angularjs.org/guide/services). This means that there is only one instance of a given service per injector.
+  > [All Angular services are singletons](https://docs.angularjs.org/guide/services). This means that there is only one instance of a given service per injector.
 
   **(AVOID)**
   ```javascript
@@ -629,20 +630,20 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Factories are singletons and return an object that contains the members of the service.
 
-    Note: [All Angular services are singletons](https://docs.angularjs.org/guide/services).
+  > [All Angular services are singletons](https://docs.angularjs.org/guide/services).
 
 ### Use Revealing Module Pattern
 ###### [Style [Y052](#style-y052)]
 
   - Expose the interface (ie. callable members of the service) at the top, using the [Revealing Module Pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#revealingmodulepatternjavascript).
 
-    *Why?*: Placing the callable members at the top makes it easy to read and helps you instantly identify which members of the service can be called and must be unit tested (and/or mocked).
+  *Why?*: Placing the callable members at the top makes it easy to read and helps you instantly identify which members of the service can be called and must be unit tested (and/or mocked).
 
-    *Why?*: This is especially helpful when the file gets longer as it helps avoid the need to scroll to see what is exposed. Scrolling through functions reduces the readability.
+  *Why?*: This is especially helpful when the file gets longer as it helps avoid the need to scroll to see what is exposed. Scrolling through functions reduces the readability.
 
-    *Why?*: You never have to worry with function declarations that moving `var a` before `var b` will break your code because `a` depends on `b`.
+  *Why?*: You never have to worry with function declarations that moving `var a` before `var b` will break your code because `a` depends on `b`.
 
-    *Why?*: Order is critical with function expressions
+  *Why?*: Order is critical with function expressions
 
   **(AVOID)**
   ```javascript
@@ -748,9 +749,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
-  **(EXCEPTION)**
-  
-  It is acceptable to expose constant values on the interface. These should be in `ALL_CAPS` to make it clear they are read-only.
+  > It is acceptable to expose constant values on the interface. These should be in `ALL_CAPS` to make it clear they are read-only.
   
 **[Back to top](#table-of-contents)**
 
@@ -761,15 +760,15 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Refactor logic for making data operations and interacting with data to a factory. Make data services responsible for XHR calls, local storage, stashing in memory, or any other data operations.
 
-    *Why?*: The controller's responsibility is for the presentation and gathering of information for the view. It should not care how it gets the data, just that it knows who to ask for it. Separating the data services moves the logic on how to get it to the data service, and lets the controller be simpler and more focused on the view.
+  *Why?*: The controller's responsibility is for the presentation and gathering of information for the view. It should not care how it gets the data, just that it knows who to ask for it. Separating the data services moves the logic on how to get it to the data service, and lets the controller be simpler and more focused on the view.
 
-    *Why?*: This makes it easier to test (mock or real) the data calls when testing a controller that uses a data service.
+  *Why?*: This makes it easier to test (mock or real) the data calls when testing a controller that uses a data service.
 
-    *Why?*: Data service implementation may have very specific code to handle the data repository. This may include headers, how to talk to the data, or other services such as `$http`. Separating the logic into a data service encapsulates this logic in a single place hiding the implementation from the outside consumers (perhaps a controller), also making it easier to change the implementation.
-    
-  Note: **use the verb `fetch` instead of `get`** to make it clear this is an async call that returns a promise.
+  *Why?*: Data service implementation may have very specific code to handle the data repository. This may include headers, how to talk to the data, or other services such as `$http`. Separating the logic into a data service encapsulates this logic in a single place hiding the implementation from the outside consumers (perhaps a controller), also making it easier to change the implementation.
   
-  Note: **return a deferred promise instead of $http promise**. The consumer should not have any knowledge of how the call was made. This ensures that if we replace $http with some other method there will be no side-effects.
+  > **use the verb `fetch` instead of `get`** to make it clear this is an async call that returns a promise.
+  
+  > **return a deferred promise instead of $http promise**. The consumer should not have any knowledge of how the call was made. This ensures that if we replace $http with some other method there will be no side-effects.
 
   **(RECOMMENDED)**
   ```javascript
@@ -797,7 +796,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   Note: The data service is called from consumers, such as a controller, hiding the implementation from the consumers, as shown below.
   
-  Note: If the controller initialization makes an async call wrap it in a method named `activate()`
+  > Use an `activate()` function to wrap all async calls in the controller initialization
 
   **(RECOMMENDED)**
   ```javascript
@@ -832,7 +831,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - When calling a data service that returns a promise, return a promise in your calling function too.
 
-    *Why?*: You can chain the promises together and take further action after the data call completes and resolves or rejects the promise.
+  *Why?*: You can chain the promises together and take further action after the data call completes and resolves or rejects the promise.
 
   **(RECOMMENDED)**
   ```javascript
@@ -881,11 +880,11 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Create one directive per file. Name the file for the directive.
 
-    *Why?*: It is easy to mash all the directives in one file, but difficult to then break those out so some are shared across apps, some across modules, some just for one module.
+  *Why?*: It is easy to mash all the directives in one file, but difficult to then break those out so some are shared across apps, some across modules, some just for one module.
 
-    *Why?*: One directive per file is easy to maintain.
+  *Why?*: One directive per file is easy to maintain.
 
-    > Note: "**Best Practice**: Directives should clean up after themselves. You can use `element.on('$destroy', ...)` or `scope.$on('$destroy', ...)` to run a clean-up function when the directive is removed" ... from the Angular documentation.
+  > "**Best Practice**: Directives should clean up after themselves. You can use `element.on('$destroy', ...)` or `scope.$on('$destroy', ...)` to run a clean-up function when the directive is removed" ... from the Angular documentation. **Angular will automatically clean up element bindings and $watches** so you will rarely need to do this.
 
   ```javascript
   /* avoid */
