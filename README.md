@@ -179,15 +179,15 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   *Why?*: Helps avoid using `$parent` calls in Views with nested controllers.
 
+  **(AVOID)**
   ```html
-  <!-- avoid -->
   <div ng-controller="CustomerController">
       {{ name }}
   </div>
   ```
 
+  **(RECOMMENDED)**
   ```html
-  <!-- recommended -->
   <div ng-controller="CustomerController as customer">
       {{ customer.name }}
   </div>
@@ -204,16 +204,16 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   *Why?*: Helps avoid the temptation of using `$scope` methods inside a controller when it may otherwise be better to avoid them or move the method to a factory, and reference them from the controller. Consider using `$scope` in a controller only when needed. For example when publishing and subscribing events using [`$emit`](https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$emit), [`$broadcast`](https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$broadcast), or [`$on`](https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$on).
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   function CustomerController($scope) {
       $scope.name = {};
       $scope.sendMessage = function() { };
   }
   ```
 
+  **(RECOMMENDED)** - but see next section
   ```javascript
-  /* recommended - but see next section */
   function CustomerController() {
       this.name = {};
       this.sendMessage = function() { };
@@ -227,16 +227,16 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   *Why?*: The `this` keyword is contextual and when used within a function inside a controller may change its context. Capturing the context of `this` avoids encountering this problem.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   function CustomerController() {
       this.name = {};
       this.sendMessage = function() { };
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   function CustomerController() {
       var vm = this;
       vm.name = {};
@@ -271,13 +271,13 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   Note: When working with larger codebases, using a more descriptive name can help ease cognitive overhead & searchability. Avoid overly verbose names that are cumbersome to type.
 
+  **(AVOID)**
   ```html
-  <!-- avoid -->
   <input ng-model="customerProductItemVm.text">
   ```
 
+  **(RECOMMENDED)**
   ```html
-  <!-- recommended -->
   <input ng-model="productVm.id">
   ```
 
@@ -290,8 +290,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Setting anonymous functions in-line can be easy, but when those functions are more than 1 line of code they can reduce the readability. Defining the functions below the bindable members (the functions will be hoisted) moves the implementation details down, keeps the bindable members up top, and makes it easier to read.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   function SessionsController() {
       var vm = this;
 
@@ -309,8 +309,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   function SessionsController() {
       var vm = this;
 
@@ -340,8 +340,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   Note: If the function is a 1 liner consider keeping it right up top, as long as readability is not affected.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   function SessionsController(data) {
       var vm = this;
 
@@ -361,8 +361,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   function SessionsController(sessionDataService) {
       var vm = this;
 
@@ -389,11 +389,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Order is critical with function expressions
 
+  **(AVOID)** Using function expressions
   ```javascript
-  /**
-   * avoid
-   * Using function expressions.
-   */
   function AvengersController(avengersService, logger) {
       var vm = this;
       vm.avengers = [];
@@ -462,9 +459,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Keeps the controller slim, trim, and focused.
 
+  **(AVOID)**
   ```javascript
-
-  /* avoid */
   function OrderController($http, $q, config, userInfo) {
       var vm = this;
       vm.checkCredit = checkCredit;
@@ -493,8 +489,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   function OrderController(creditService) {
       var vm = this;
       vm.checkCredit = checkCredit;
@@ -525,9 +521,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Pairing the controller in the route allows different routes to invoke different pairs of controllers and views. When controllers are assigned in the view using [`ng-controller`](https://docs.angularjs.org/api/ng/directive/ngController), that view is always associated with the same controller.
 
+  **(AVOID)** when using with a route and dynamic pairing is desired
  ```javascript
-  /* avoid - when using with a route and dynamic pairing is desired */
-
   // route-config.js
   angular
       .module('app')
@@ -547,8 +542,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   </div>
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
 
   // route-config.js
   angular
@@ -886,8 +881,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   > "**Best Practice**: Directives should clean up after themselves. You can use `element.on('$destroy', ...)` or `scope.$on('$destroy', ...)` to run a clean-up function when the directive is removed" ... from the Angular documentation. **Angular will automatically clean up element bindings and $watches** so you will rarely need to do this.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   /* directives.js */
 
   angular
@@ -915,8 +910,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   /* calendar-range.directive.js */
 
   /**
@@ -932,8 +927,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   /* customer-info.directive.js */
 
   /**
@@ -949,8 +944,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   /* spinner.directive.js */
 
   /**
@@ -995,13 +990,13 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: EA is the default for Angular 1.3 +
 
+  **(AVOID)**
   ```html
-  <!-- avoid -->
   <div class="my-calendar-range"></div>
   ```
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   angular
       .module('app.widgets')
       .directive('myCalendarRange', myCalendarRange);
@@ -1020,14 +1015,14 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```html
-  <!-- recommended -->
   <my-calendar-range></my-calendar-range>
   <div my-calendar-range></div>
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   angular
       .module('app.widgets')
       .directive('myCalendarRange', myCalendarRange);
@@ -1188,8 +1183,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: If you need to conditionally cancel the route before you start using the controller, use a [route resolve](#style-y081) instead.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   function AvengersController(dataservice) {
       var vm = this;
       vm.avengers = [];
@@ -1202,8 +1197,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
   function AvengersController(dataservice) {
       var vm = this;
       vm.avengers = [];
@@ -1235,8 +1230,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: The code executes before the route via a promise. Rejecting the promise cancels the route. Resolve makes the new view wait for the route to resolve. A “busy” animation can be shown before the resolve and through the view transition. If you want to get to the View faster and do not require a checkpoint to decide if you can get to the View, consider the [controller `activate` technique](#style-y080) instead.
 
+  **(AVOID)**
   ```javascript
-  /* avoid */
   angular
       .module('app')
       .controller('AvengersController', AvengersController);
@@ -1336,8 +1331,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: The parameters to the component (e.g. controller, factory, etc) will be converted to mangled variables. For example, `common` and `dataservice` may become `a` or `b` and not be found by Angular.
 
+    **(AVOID)** not minification-safe
     ```javascript
-    /* avoid - not minification-safe*/
     angular
         .module('app')
         .controller('DashboardController', DashboardController);
@@ -1348,8 +1343,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     This code may produce mangled variables when minified and thus cause runtime errors.
 
+    **(AVOID)** not minification-safe
     ```javascript
-    /* avoid - not minification-safe*/
     angular.module('app').controller('DashboardController', d);function d(a, b) { }
     ```
 
@@ -1364,8 +1359,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Avoid creating in-line dependencies as long lists can be difficult to read in the array. Also it can be confusing that the array is a series of strings while the last item is the component's function.
 
+    **(AVOID)**
     ```javascript
-    /* avoid */
     angular
         .module('app')
         .controller('DashboardController',
@@ -1374,8 +1369,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
             ]);
     ```
 
+    **(AVOID)**
     ```javascript
-    /* avoid */
     angular
       .module('app')
       .controller('DashboardController',
@@ -1385,8 +1380,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     }
     ```
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     angular
         .module('app')
         .controller('DashboardController', DashboardController);
@@ -1399,8 +1394,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: When your function is below a return statement the `$inject` may be unreachable (this may happen in a directive). You can solve this by moving the Controller outside of the directive.
 
+    **(AVOID)**
     ```javascript
-    /* avoid */
     // inside a directive definition
     function outer() {
         var ddo = {
@@ -1415,8 +1410,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     }
     ```
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     // outside a directive definition
     function outer() {
         var ddo = {
@@ -1440,8 +1435,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: An `$inject` statement can easily precede the resolver to handle making any dependencies minification safe.
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     function config($routeProvider) {
         $routeProvider
             .when('/avengers', {
@@ -1585,8 +1580,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: Another option is to override the service instead of using a decorator. This is a fine option, but if you want to keep the default behavior and extend it a decorator is recommended.
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     angular
         .module('blocks.exception')
         .config(exceptionConfig);
@@ -1626,8 +1621,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     Note: The exception catcher is good for catching and reacting to specific exceptions from calls that you know may throw one. For example, when making an XHR call to retrieve data from a remote web service and you want to catch any exceptions from that service and react uniquely.
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     angular
         .module('blocks.exception')
         .factory('exception', exception);
@@ -1657,8 +1652,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Potentially provides a better user experience if a routing error occurs and you route them to a friendly screen with more details or recovery options.
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
     var handlingRouteChangeError = false;
 
     function handleRoutingErrors() {
@@ -1733,11 +1728,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     loggerService.js
     ```
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // controllers
     avengers.controller.js
     avengers.controller.spec.js
@@ -1766,10 +1758,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   Note: Another common convention is naming controller files without the word `controller` in the file name such as `avengers.js` instead of `avengers.controller.js`. All other conventions still hold using a suffix of the type. Controllers are the most common type of component so this just saves typing and is still easily identifiable. I recommend you choose 1 convention and be consistent for your team. My preference is `avengers.controller.js` identifying the `AvengersController`.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
     // Controllers
     avengers.js
     avengers.spec.js
@@ -1784,10 +1774,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Provides pattern matching for [karma](http://karma-runner.github.io/) or other test runners.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
     avengers.controller.spec.js
     logger.service.spec.js
     avengers.routes.spec.js
@@ -1803,11 +1791,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: UpperCamelCase is conventional for identifying object that can be instantiated using a constructor.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // avengers.controller.js
     angular
         .module
@@ -1823,11 +1808,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: The `Controller` suffix is more commonly used and is more explicitly descriptive.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // avengers.controller.js
     angular
         .module
@@ -1849,11 +1831,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Service names such as `avengers` are nouns and require a suffix and should be named `avengersService`.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // logger.service.js
     angular
         .module
@@ -1862,11 +1841,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     function logger() { }
     ```
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // credit.service.js
     angular
         .module
@@ -1889,11 +1865,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: Provides a consistent way to quickly identify and reference components.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     // avenger-profile.directive.js
     angular
         .module
@@ -2021,11 +1994,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
     *Why?*: When there are a lot of files (10+) locating them is easier with a consistent folder structures and more difficult in flat structures.
 
+    **(RECOMMENDED)**
     ```javascript
-    /**
-     * recommended
-     */
-
     app/
         app.module.js
         app.config.js
@@ -2064,13 +2034,9 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
       Note: Do not structure your app using folders-by-type. This requires moving to multiple folders when working on a feature and gets unwieldy quickly as the app grows to 5, 10 or 25+ views and controllers (and other features), which makes it more difficult than folder-by-feature to locate files.
 
+    **(AVOID)** folders-by-type
+    **(RECOMMENDED)** "folders-by-feature", instead
     ```javascript
-    /*
-    * avoid
-    * Alternative folders-by-type.
-    * I recommend "folders-by-feature", instead.
-    */
-
     app/
         app.module.js
         app.config.js
@@ -2296,8 +2262,8 @@ Unit testing helps maintain clean code, as such I included some of my recommenda
 
     *Why?*: Karma works well with task automation leaders such as [Grunt](http://www.gruntjs.com) (with [grunt-karma](https://github.com/karma-runner/grunt-karma)) and [Gulp](http://www.gulpjs.com). When using Gulp, use [Karma](https://github.com/karma-runner/karma) directly and not with a plugin as the API can be called directly.
 
+    **(RECOMMENDED)**
     ```javascript
-    /* recommended */
 
     // Gulp example with Karma directly
     function startTests(singleRun, done) {
