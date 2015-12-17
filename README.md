@@ -766,114 +766,110 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     *Why?*: This makes it easier to test (mock or real) the data calls when testing a controller that uses a data service.
 
     *Why?*: Data service implementation may have very specific code to handle the data repository. This may include headers, how to talk to the data, or other services such as `$http`. Separating the logic into a data service encapsulates this logic in a single place hiding the implementation from the outside consumers (perhaps a controller), also making it easier to change the implementation.
+    
+  Note: **use the verb `fetch` instead of `get`** to make it clear this is an async call that returns a promise.
+  
+  Note: **return a deferred promise instead of $http promise**. The consumer should not have any knowledge of how the call was made. This ensures that if we replace $http with some other method there will be no side-effects.
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
-
-  // dataservice factory
-  angular
-      .module('app.core')
-      .factory('dataservice', dataservice);
-
-  dataservice.$inject = ['$http', 'logger'];
-
-  function dataservice($http, logger) {
-      return {
-          getAvengers: getAvengers
-      };
-
-      function getAvengers() {
-          return $http.get('/api/maa')
-              .then(getAvengersComplete)
-              .catch(getAvengersFailed);
-
-          function getAvengersComplete(response) {
-              return response.data.results;
-          }
-
-          function getAvengersFailed(error) {
-              logger.error('XHR Failed for getAvengers.' + error.data);
-          }
-      }
+  module.exports = function AvengersFactory(Logger, $q, $http) {
+    return {
+      fetch: fetch
+    };
+  
+    function fetch() {
+      var deferred = $q.defer();
+  
+      $http.get('/api/maa')
+        .then(function(response) {
+          var res = response.data.results;
+          deferred.resolve(res);
+        }, function(error) {
+          Logger.error('XHR Failed for getAvengers.' + error.data);
+          deferred.reject(error);
+        });
+  
+      return deferred.promise;
+    }
   }
   ```
 
-    Note: The data service is called from consumers, such as a controller, hiding the implementation from the consumers, as shown below.
+  Note: The data service is called from consumers, such as a controller, hiding the implementation from the consumers, as shown below.
+  
+  Note: If the controller initialization makes an async call wrap it in a method named `activate()`
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
-
-  // controller calling the dataservice factory
-  angular
-      .module('app.avengers')
-      .controller('AvengersController', AvengersController);
-
-  AvengersController.$inject = ['dataservice', 'logger'];
-
-  function AvengersController(dataservice, logger) {
-      var vm = this;
-      vm.avengers = [];
-
-      activate();
-
-      function activate() {
-          return getAvengers().then(function() {
-              logger.info('Activated Avengers View');
-          });
-      }
-
-      function getAvengers() {
-          return dataservice.getAvengers()
-              .then(function(data) {
-                  vm.avengers = data;
-                  return vm.avengers;
-              });
-      }
+  module.exports = function AvengersController(Logger, Avengers) {
+    var vm = this;
+  
+    vm.avengers = [];
+  
+    activate();
+  
+    function activate() {
+      return fetchAvengers()
+        .then(function() {
+          Logger.info('Activated Avengers View');
+        });
+    }
+  
+    function fetchAvengers() {
+      return Avengers.fetch()
+        .then(function(avengers) {
+          vm.avengers = avengers;
+          return vm.avengers;
+        }, function(err) {
+          // handle error
+        });
+    }
   }
   ```
 
 ### Return a Promise from Data Calls
 ###### [Style [Y061](#style-y061)]
 
-  - When calling a data service that returns a promise such as `$http`, return a promise in your calling function too.
+  - When calling a data service that returns a promise, return a promise in your calling function too.
 
     *Why?*: You can chain the promises together and take further action after the data call completes and resolves or rejects the promise.
 
+  **(RECOMMENDED)**
   ```javascript
-  /* recommended */
-
   activate();
-
+  
   function activate() {
+    /**
+     * Step 1
+     * Ask the getAvengers function for the
+     * avenger data and wait for the promise
+     */
+    return fetchAvengers().then(function() {
       /**
-       * Step 1
-       * Ask the getAvengers function for the
-       * avenger data and wait for the promise
+       * Step 4
+       * Perform an action on resolve of final promise
        */
-      return getAvengers().then(function() {
-          /**
-           * Step 4
-           * Perform an action on resolve of final promise
-           */
-          logger.info('Activated Avengers View');
-      });
+      Logger.info('Activated Avengers View');
+    });
   }
-
-  function getAvengers() {
+  
+  function fetchAvengers() {
+    /**
+     * Step 2
+     * Ask the data service for the data and wait
+     * for the promise
+     */
+    return Avengers.fetch()
+      .then(function(avengers) {
         /**
-         * Step 2
-         * Ask the data service for the data and wait
-         * for the promise
+         * Step 3
+         * set the data and resolve the promise
          */
-        return dataservice.getAvengers()
-            .then(function(data) {
-                /**
-                 * Step 3
-                 * set the data and resolve the promise
-                 */
-                vm.avengers = data;
-                return vm.avengers;
-        });
+        vm.avengers = avengers;
+        return vm.avengers;
+      }, function(err) {
+        // handle error
+      });
   }
   ```
 
