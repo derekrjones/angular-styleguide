@@ -1,4 +1,4 @@
-# Angular Style Guide for CommonJS
+# Angular Style Guide for Browserify
 
 based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpapa/angular-styleguide)
 
