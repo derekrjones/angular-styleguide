@@ -791,7 +791,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   Note: The data service is called from consumers, such as a controller, hiding the implementation from the consumers, as shown below.
   
-  > Use an `activate()` function to wrap all async calls in the controller initialization
+  > Use an [activate()](#style-y080) function to wrap all async calls in the controller initialization
 
   **(RECOMMENDED)**
   ```javascript
@@ -1173,10 +1173,10 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   }
 
   function MinMaxInputController() {
-      var vm = this;
-      vm.min = 3;
-      console.log('CTRL: vm.min = %s', vm.min);
-      console.log('CTRL: vm.max = %s', vm.max);
+    var vm = this;
+    vm.min = 3;
+    console.log('CTRL: vm.min = %s', vm.min);
+    console.log('CTRL: vm.max = %s', vm.max);
   }
   ```
 
@@ -1195,148 +1195,132 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Resolve start-up logic for a controller in an `activate` function.
 
-    *Why?*: Placing start-up logic in a consistent place in the controller makes it easier to locate, more consistent to test, and helps avoid spreading out the activation logic across the controller.
+  *Why?*: Placing start-up logic in a consistent place in the controller makes it easier to locate, more consistent to test, and helps avoid spreading out the activation logic across the controller.
 
-    *Why?*: The controller `activate` makes it convenient to re-use the logic for a refresh for the controller/View, keeps the logic together, gets the user to the View faster, makes animations easy on the `ng-view` or `ui-view`, and feels snappier to the user.
+  *Why?*: The controller `activate` makes it convenient to re-use the logic for a refresh for the controller/View, keeps the logic together, gets the user to the View faster, makes animations easy on the `ng-view` or `ui-view`, and feels snappier to the user.
 
-    Note: If you need to conditionally cancel the route before you start using the controller, use a [route resolve](#style-y081) instead.
+  > If you need to conditionally cancel the route before you start using the controller, use a [route resolve](#style-y081) instead.
 
   **(AVOID)**
   ```javascript
-  function AvengersController(dataservice) {
-      var vm = this;
-      vm.avengers = [];
-      vm.title = 'Avengers';
-
-      dataservice.getAvengers().then(function(data) {
-          vm.avengers = data;
-          return vm.avengers;
+  module.exports = function AvengersController(Avengers) {
+    var vm = this;
+    vm.avengers = [];
+  
+    Avengers.fetch()
+      .then(function(avengers) {
+        vm.avengers = avengers;
+        return vm.avengers;
       });
   }
   ```
 
   **(RECOMMENDED)**
   ```javascript
-  function AvengersController(dataservice) {
-      var vm = this;
-      vm.avengers = [];
-      vm.title = 'Avengers';
-
-      activate();
-
-      ////////////
-
-      function activate() {
-          return dataservice.getAvengers().then(function(data) {
-              vm.avengers = data;
-              return vm.avengers;
-          });
-      }
+  module.exports = function AvengersController(Avengers) {
+    var vm = this;
+    vm.avengers = [];
+  
+    activate();
+  
+    function activate() {
+      return fetchAvengers()
+        .then(function() {
+          /* ... */
+        });
+    }
+  
+    function fetchAvengers() {
+      return Avengers.fetch()
+        .then(function(avengers) {
+          vm.avengers = avengers;
+          return vm.avengers;
+        }, function(err) {
+          // handle error
+        });
+    }
   }
   ```
 
 ### Route Resolve Promises
 ###### [Style [Y081](#style-y081)]
 
-  - When a controller depends on a promise to be resolved before the controller is activated, resolve those dependencies in the `$routeProvider` before the controller logic is executed. If you need to conditionally cancel a route before the controller is activated, use a route resolver.
+  - When a controller depends on a promise to be resolved before the controller is activated, resolve those dependencies in the `resolve` object in `$routeProvider` (or `$stateProvider` for ui-router) before the controller logic is executed. If you need to conditionally cancel a route before the controller is activated, use a route resolver.
 
-  - Use a route resolve when you want to decide to cancel the route before ever transitioning to the View.
+  > Use a route resolve when you want to decide to cancel the route before ever transitioning to the View. This is a great place to check for user authorization or permissions. If the user is not authorized you can perform a redirect here.
+  
+  *Why?*: A controller may require data before it loads. That data may come from a promise via a custom factory or [$http](https://docs.angularjs.org/api/ng/service/$http). Using a [route resolve](https://docs.angularjs.org/api/ngRoute/provider/$routeProvider) allows the promise to resolve before the controller logic executes, so it might take action based on that data from the promise.
 
-    *Why?*: A controller may require data before it loads. That data may come from a promise via a custom factory or [$http](https://docs.angularjs.org/api/ng/service/$http). Using a [route resolve](https://docs.angularjs.org/api/ngRoute/provider/$routeProvider) allows the promise to resolve before the controller logic executes, so it might take action based on that data from the promise.
+  *Why?*: The code executes after the route and in the controller’s activate function. The View starts to load right away. Data binding kicks in when the activate promise resolves. A “busy” animation can be shown during the view transition (via `ng-view` or `ui-view`)
 
-    *Why?*: The code executes after the route and in the controller’s activate function. The View starts to load right away. Data binding kicks in when the activate promise resolves. A “busy” animation can be shown during the view transition (via `ng-view` or `ui-view`)
-
-    Note: The code executes before the route via a promise. Rejecting the promise cancels the route. Resolve makes the new view wait for the route to resolve. A “busy” animation can be shown before the resolve and through the view transition. If you want to get to the View faster and do not require a checkpoint to decide if you can get to the View, consider the [controller `activate` technique](#style-y080) instead.
+  > Note: The code executes before the route via a promise. Rejecting the promise cancels the route. Resolve makes the new view wait for the route to resolve. A “busy” animation can be shown before the resolve and through the view transition. If you want to get to the View faster and do not require a checkpoint to decide if you can get to the View, consider the [controller `activate` technique](#style-y080) instead.
 
   **(AVOID)**
   ```javascript
-  angular
-      .module('app')
-      .controller('AvengersController', AvengersController);
-
-  function AvengersController(movieService) {
-      var vm = this;
-      // unresolved
-      vm.movies;
-      // resolved asynchronously
-      movieService.getMovies().then(function(response) {
-          vm.movies = response.movies;
+  module.exports = function AvengersController(Avengers) {
+    var vm = this;
+    // unresolved
+    vm.avengers;
+    // resolved asynchronously
+    Avengers.fetch()
+      .then(function(avengers) {
+        vm.avengers = avengers;
+        return vm.avengers;
       });
   }
   ```
 
+  **(RECOMMENDED)**
   ```javascript
-  /* better */
-
-  // route-config.js
-  angular
-      .module('app')
-      .config(config);
-
-  function config($routeProvider) {
-      $routeProvider
-          .when('/avengers', {
-              templateUrl: 'avengers.html',
-              controller: 'AvengersController',
-              controllerAs: 'vm',
-              resolve: {
-                  moviesPrepService: function(movieService) {
-                      return movieService.getMovies();
-                  }
-              }
-          });
+  /* route-config.js */
+  module.exports = function config($routeProvider) {
+    $routeProvider
+      .when('/avengers', {
+        template: require('./avengers/avengers.html'),
+        controller: require('./avengers/Avengers.controller'),
+        controllerAs: 'vm',
+        resolve: {
+          avengers: function(Avengers) {
+            return Avengers.fetch();
+          }
+        }
+      });
   }
+  ```
+  
+  ```javascript
+  /*  Avengers.controller.js */
+  module.exports = function AvengersController(avengers) {
+    var vm = this;
+    vm.avengers = avengers;
+  }
+  ```
+  
+  > The example below shows the route resolve points to a named function, which is easier to debug and easier to handle dependency injection.
 
-  // avengers.js
-  angular
-      .module('app')
-      .controller('AvengersController', AvengersController);
-
-  AvengersController.$inject = ['moviesPrepService'];
-  function AvengersController(moviesPrepService) {
-      var vm = this;
-      vm.movies = moviesPrepService.movies;
+  ```javascript
+  /* route-config.js */
+  module.exports = function config($routeProvider) {
+    $routeProvider
+      .when('/avengers', {
+        template: require('./avengers/avengers.html'),
+        controller: require('./avengers/Avengers.controller'),
+        controllerAs: 'vm',
+        resolve: {
+          avengers: require('./Avengers.resolve')
+        }
+      });
+  }
+  ```
+  
+  ```javascript
+  /* Avengers.resolve.js */
+  module.exports = function AvengersResolve(Avengers) {
+    return Avengers.fetch();
   }
   ```
 
-    Note: The example below shows the route resolve points to a named function, which is easier to debug and easier to handle dependency injection.
-
-  ```javascript
-  /* even better */
-
-  // route-config.js
-  angular
-      .module('app')
-      .config(config);
-
-  function config($routeProvider) {
-      $routeProvider
-          .when('/avengers', {
-              templateUrl: 'avengers.html',
-              controller: 'AvengersController',
-              controllerAs: 'vm',
-              resolve: {
-                  moviesPrepService: moviesPrepService
-              }
-          });
-  }
-
-  function moviesPrepService(movieService) {
-      return movieService.getMovies();
-  }
-
-  // avengers.js
-  angular
-      .module('app')
-      .controller('AvengersController', AvengersController);
-
-  AvengersController.$inject = ['moviesPrepService'];
-  function AvengersController(moviesPrepService) {
-        var vm = this;
-        vm.movies = moviesPrepService.movies;
-  }
-  ```
-    Note: The code example's dependency on `movieService` is not minification safe on its own. For details on how to make this code minification safe, see the sections on [dependency injection](#manual-annotating-for-dependency-injection) and on [minification and annotation](#minification-and-annotation).
+  > The code example's dependency on `Avengers` is not minification safe on its own. For details on how to make this code minification safe, see the sections on [dependency injection](#manual-annotating-for-dependency-injection) and on [minification and annotation](#minification-and-annotation).
 
 **[Back to top](#table-of-contents)**
 
