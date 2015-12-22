@@ -1714,187 +1714,205 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Naming Guidelines
 ###### [Style [Y120](#style-y120)]
 
-  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`. There are 2 names for most assets:
-    * the file name (`avengers.controller.js`)
-    * the registered component name with Angular (`AvengersController`)
+  | type       | file name                    | provider name        | function name             |
+  | ---------: | ---------------------------- | -------------------- | ------------------------- |
+  | directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
+  | factory    | Avengers.factory.js          | 'Avengers'           | AvengersFactory()         |
+  | controller | Avengers.controller.js       | 'AvengersController' | AvengersController()      |
+  | provider   | Avengers.provider.js         | 'AvengersProvider'   | AvengersProvider()        |
+  | constant   | avengers.constant.js         | 'AVENGERS'           | -                         |
+  | config     | avengers.config.js           | -                    | avengersConfig()          |
+  | run        | avengers.run.js              | -                    | avengersRun()             |
 
-    *Why?*: Naming conventions help provide a consistent way to find content at a glance. Consistency within the project is vital. Consistency with a team is important. Consistency across a company provides tremendous efficiency.
+  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`. There are 3 names for most assets:
+    * the file name (`Avengers.factory.js`)
+    * the registered component name with Angular (`Avengers`)
+    * the function name (`AvengersFactory()`)
 
-    *Why?*: The naming conventions should simply help you find your code faster and make it easier to understand.
+  *Why?*: Naming conventions help provide a consistent way to find content at a glance. Consistency within the project is vital. Consistency with a team is important. Consistency across a company provides tremendous efficiency.
+
+  *Why?*: The naming conventions should simply help you find your code faster and make it easier to understand.
 
 ### Feature File Names
 ###### [Style [Y121](#style-y121)]
 
   - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`.
 
-    *Why?*: Provides a consistent way to quickly identify components.
+  *Why?*: Provides a consistent way to quickly identify components.
 
-    *Why?*: Provides pattern matching for any automated tasks.
+  *Why?*: Provides pattern matching for any automated tasks like minification and linting.
 
-    ```javascript
-    /**
-     * common options
-     */
+  **(RECOMMENDED)**
+  ```javascript
+  // module definition - the directory and path provide the module name
+  index.js
+  
+  // directives
+  avenger-profile.directive.js
+  avenger-profile.directive.spec.js
+  avenger-profile.html
+  
+  // services/factories
+  Logger.factory.js
+  Logger.factory.spec.js
+  
+  // controllers
+  Avengers.controller.js
+  Avengers.controller.spec.js
 
-    // Controllers
-    avengers.js
-    avengers.controller.js
-    avengersController.js
-
-    // Services/Factories
-    logger.js
-    logger.service.js
-    loggerService.js
-    ```
-
-    **(RECOMMENDED)**
-    ```javascript
-    // controllers
-    avengers.controller.js
-    avengers.controller.spec.js
-
-    // services/factories
-    logger.service.js
-    logger.service.spec.js
-
-    // constants
-    constants.js
-
-    // module definition
-    avengers.module.js
-
-    // routes
-    avengers.routes.js
-    avengers.routes.spec.js
-
-    // configuration
-    avengers.config.js
-
-    // directives
-    avenger-profile.directive.js
-    avenger-profile.directive.spec.js
-    ```
-
-  Note: Another common convention is naming controller files without the word `controller` in the file name such as `avengers.js` instead of `avengers.controller.js`. All other conventions still hold using a suffix of the type. Controllers are the most common type of component so this just saves typing and is still easily identifiable. I recommend you choose 1 convention and be consistent for your team. My preference is `avengers.controller.js` identifying the `AvengersController`.
-
-    **(RECOMMENDED)**
-    ```javascript
-    // Controllers
-    avengers.js
-    avengers.spec.js
-    ```
+  // constants
+  avengers.constant.js / avengers.json
+  
+  // configuration
+  avengers.config.js
+  
+  // decorators
+  Logger.decorator.js
+  $exceptionHandler.decorator.js
+  
+  // routes (states for ui-router)
+  routes.js
+  routes.spec.js
+  ```
 
 ### Test File Names
 ###### [Style [Y122](#style-y122)]
 
   - Name test specifications similar to the component they test with a suffix of `spec`.
 
-    *Why?*: Provides a consistent way to quickly identify components.
+  *Why?*: Provides a consistent way to quickly identify components.
 
-    *Why?*: Provides pattern matching for [karma](http://karma-runner.github.io/) or other test runners.
+  *Why?*: Provides pattern matching for [karma](http://karma-runner.github.io/) or other test runners.
 
-    **(RECOMMENDED)**
-    ```javascript
-    avengers.controller.spec.js
-    logger.service.spec.js
-    avengers.routes.spec.js
-    avenger-profile.directive.spec.js
-    ```
+  **(RECOMMENDED)**
+  ```javascript
+  Avengers.controller.spec.js
+  Logger.factory.spec.js
+  routes.spec.js
+  avenger-profile.directive.spec.js
+  ```
 
 ### Controller Names
 ###### [Style [Y123](#style-y123)]
 
-  - Use consistent names for all controllers named after their feature. Use UpperCamelCase for controllers, as they are constructors.
+  - Use consistent names for all controllers named after their feature.
+  - Use **PascalCase** (UpperCamelCase) for controllers, as they are constructors.
 
-    *Why?*: Provides a consistent way to quickly identify and reference controllers.
+  *Why?*: Provides a consistent way to quickly identify and reference controllers.
 
-    *Why?*: UpperCamelCase is conventional for identifying object that can be instantiated using a constructor.
+  *Why?*: PascalCase is conventional for identifying object that can be instantiated using a constructor.
 
-    **(RECOMMENDED)**
-    ```javascript
-    // avengers.controller.js
-    angular
-        .module
-        .controller('HeroAvengersController', HeroAvengersController);
-
-    function HeroAvengersController() { }
-    ```
+  **(RECOMMENDED)**
+  ```javascript
+  /* index.js */
+  module.exports = angular
+    .module('app.avengers', [])
+    .controller('AvengersController', require('./Avengers.controller'))
+  
+  /* Avengers.controller.js */
+  module.exports = function AvengersController() { }
+  ```
 
 ### Controller Name Suffix
 ###### [Style [Y124](#style-y124)]
 
-  - Append the controller name with the suffix `Controller`.
+  - Append the controller name with the suffix `Controller` in both the angular and function declaration.
 
-    *Why?*: The `Controller` suffix is more commonly used and is more explicitly descriptive.
+  *Why?*: The `Controller` suffix is more commonly used and is more explicitly descriptive.
 
-    **(RECOMMENDED)**
-    ```javascript
-    // avengers.controller.js
-    angular
-        .module
-        .controller('AvengersController', AvengersController);
-
-    function AvengersController() { }
-    ```
+  **(RECOMMENDED)**
+  ```javascript
+  /* index.js */
+  module.exports = angular
+    .module('app.avengers', [])
+    .controller('AvengersController', require('./Avengers.controller'))
+  ```
+  
+  ```javascript
+  /* Avengers.controller.js */
+  module.exports = function AvengersController() { }
+  ```
 
 ### Factory and Service Names
 ###### [Style [Y125](#style-y125)]
 
-  - Use consistent names for all factories and services named after their feature. Use camel-casing for services and factories. Avoid prefixing factories and services with `$`. Only suffix service and factories with `Service` when it is not clear what they are (i.e. when they are nouns).
+  - Use consistent names for all factories and services named after their feature. 
+  - Use **PascalCase** (UpperCamelCase) for services and factories. 
+  - Avoid prefixing factories and services with `$`. 
+  - Avoid suffixing provider name with `Service` or `Factory`.
 
-    *Why?*: Provides a consistent way to quickly identify and reference factories.
+  *Why?*: Provides a consistent way to quickly identify and reference factories.
 
-    *Why?*: Avoids name collisions with built-in factories and services that use the `$` prefix.
+  *Why?*: PascalCase is conventional for identifying Singletons. This also has the added benefit of differentiating between locals and injections.
+  
+  *Why?*: Avoids name collisions with built-in factories and services that use the `$` prefix.
 
-    *Why?*: Clear service names such as `logger` do not require a suffix.
+  *Why?*: Clear service names such as `Logger` do not require a suffix. Service names use PascalCase avoid the need for a suffix. `Avengers` is preferable `avengersService`.
 
-    *Why?*: Service names such as `avengers` are nouns and require a suffix and should be named `avengersService`.
-
-    **(RECOMMENDED)**
-    ```javascript
-    // logger.service.js
-    angular
-        .module
-        .factory('logger', logger);
-
-    function logger() { }
-    ```
-
-    **(RECOMMENDED)**
-    ```javascript
-    // credit.service.js
-    angular
-        .module
-        .factory('creditService', creditService);
-
-    function creditService() { }
-
-    // customer.service.js
-    angular
-        .module
-        .service('customerService', customerService);
-
-    function customerService() { }
-    ```
+  **(RECOMMENDED)**
+  ```javascript
+  /* index.js */
+  module.exports = angular
+    .module('app.avengers', [])
+    .controller('Avengers', require('./Avengers.factory'))
+  ```
+    
+  ```javascript
+  /* Avengers.factory.js */
+  module.exports = function AvengersFactory() {
+    return {/* ... */};
+  }
+  ```
+    
+  ```javascript
+  /* Avengers.controller.js */
+  module.exports = function AvengersController(Avengers) {
+    var avenger = Avengers.create('Ironman', 'Tony Stark');
+  }
+  ```
 
 ### Directive Component Names
 ###### [Style [Y126](#style-y126)]
+  
+  | type       | file name                    | provider name        | function name             |
+  | ---------: | ---------------------------- | -------------------- | ------------------------- |
+  | directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
+    
+  - Use **snake-case** for directive file names. Don't include the namespace prefix.
+  - Use **camelCase** for the provider name, since including the namespace prefix.
+  - Use **PascalCase** for the function declarations. Don't include the namespace prefix.
 
-  - Use consistent names for all directives using camel-case. Use a short prefix to describe the area that the directives belong (some example are company prefix or project prefix).
+  *Why?*: Provides the most meaningful way to quickly identify and reference components.
+  *Why?*: Only the view and angular are aware of the namespace prefix.
+  *Why?*: File names match usage (excluding for the prefix).
 
-    *Why?*: Provides a consistent way to quickly identify and reference components.
-
-    **(RECOMMENDED)**
-    ```javascript
-    // avenger-profile.directive.js
-    angular
-        .module
-        .directive('xxAvengerProfile', xxAvengerProfile);
-
-    // usage is <xx-avenger-profile> </xx-avenger-profile>
-
-    function xxAvengerProfile() { }
-    ```
+  **(RECOMMENDED)**
+  ```javascript
+  /* avenger-profile.directive.js */
+  module.exports = angular
+    .module('app.avengers', [])
+    .directive('xxAvengerProfile', require('./avengers-profile.directive'))
+  ```
+  
+  ```html
+  <xx-avenger-profile> </xx-avenger-profile>
+  ```
+  
+  ```javascript
+  /* avengers-profile.directive.js */
+  module.exports = function AvengerProfileDirective() {
+    return {
+      /* ... */
+      template: require('./avengers-profile.html'),
+      link: AvengerProfileLink,
+      controller: AvengerProfileController
+    }
+  
+    function AvengerProfileLink(scope, element, attr, controller) { }
+  }
+  
+  function AvengerProfileController(scope, element, attr, controller) { }
+  ```
 
 ### Modules
 ###### [Style [Y127](#style-y127)]
