@@ -1917,26 +1917,35 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Modules
 ###### [Style [Y127](#style-y127)]
 
-  - When there are multiple modules, the main module file is named `app.module.js` while other dependent modules are named after what they represent. For example, an admin module is named `admin.module.js`. The respective registered module names would be `app` and `admin`.
+  - All modules have their own directory and have the file name `index.js`.
+  - use `app` as the module name if you have only a single app (`ng-app="app"`)
+  - use `app` prefix when you have multiple apps (`ng-app="app.main"`, `ng-app="app.admin"`)
+  - use `xx` namespace prefix for all features ('xx.feature.sub-feature')
 
-    *Why?*: Provides consistency for multiple module apps, and for expanding to large applications.
+  *Why?*: Adding modules of a dependency is dead simple.
 
-    *Why?*: Provides easy way to use task automation to load all module definitions first, then all other angular files (for bundling).
+  > `require('./some-feature-folder').name` will load and get the name of the module for adding as a dependency.
+
+  *Why?*: Provides consistency for multiple apps with multiple modules, and for expanding to large applications.
+
+  *Why?*: Using different namespaces for apps and features creates a clear separation and avoids conflicts when adding new apps.
 
 ### Configuration
 ###### [Style [Y128](#style-y128)]
 
-  - Separate configuration for a module into its own file named after the module. A configuration file for the main `app` module is named `app.config.js` (or simply `config.js`). A configuration for a module named `admin.module.js` is named `admin.config.js`.
+  - Separate configuration for a module into its own file named after the module. A configuration file for the main `app` module is named `app.config.js` (or simply `config.js`). A configuration for the module defined in `avengers/index.js` is named `avengers.config.js`.
 
-    *Why?*: Separates configuration from module definition, components, and active code.
+  *Why?*: Separates configuration from module definition, components, and active code.
 
-    *Why?*: Provides an identifiable place to set configuration for a module.
+  *Why?*: Provides an identifiable place to set configuration for a module.
 
 ### Routes
 ###### [Style [Y129](#style-y129)]
 
-  - Separate route configuration into its own file. Examples might be `app.route.js` for the main module and `admin.route.js` for the `admin` module. Even in smaller apps I prefer this separation from the rest of the configuration.
+  - Separate route configuration into its own file. Examples might be `routes.js` for the main module. Even in smaller apps I prefer this separation from the rest of the configuration.
 
+  > Separate routes so that each module contains it's own route definitions, this allows you to build multiple apps with the different routes depending on which features are exposed.
+ 
 **[Back to top](#table-of-contents)**
 
 ## Application Structure LIFT Principle
