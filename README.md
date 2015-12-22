@@ -1714,15 +1714,15 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Naming Guidelines
 ###### [Style [Y120](#style-y120)]
 
-  | type       | file name                    | provider name        | function name             |
-  | ---------: | ---------------------------- | -------------------- | ------------------------- |
-  | directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
-  | factory    | Avengers.factory.js          | 'Avengers'           | AvengersFactory()         |
-  | controller | Avengers.controller.js       | 'AvengersController' | AvengersController()      |
-  | provider   | Avengers.provider.js         | 'AvengersProvider'   | AvengersProvider()        |
-  | constant   | avengers.constant.js         | 'AVENGERS'           | -                         |
-  | config     | avengers.config.js           | -                    | avengersConfig()          |
-  | run        | avengers.run.js              | -                    | avengersRun()             |
+| type       | file name                    | provider name        | function name             |
+| ---------: | ---------------------------- | -------------------- | ------------------------- |
+| directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
+| factory    | Avengers.factory.js          | 'Avengers'           | AvengersFactory()         |
+| controller | Avengers.controller.js       | 'AvengersController' | AvengersController()      |
+| provider   | Avengers.provider.js         | 'AvengersProvider'   | AvengersProvider()        |
+| constant   | avengers.constant.js         | 'AVENGERS'           | -                         |
+| config     | avengers.config.js           | -                    | avengersConfig()          |
+| run        | avengers.run.js              | -                    | avengersRun()             |
 
   - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`. There are 3 names for most assets:
     * the file name (`Avengers.factory.js`)
@@ -1874,16 +1874,18 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Directive Component Names
 ###### [Style [Y126](#style-y126)]
   
-  | type       | file name                    | provider name        | function name             |
-  | ---------: | ---------------------------- | -------------------- | ------------------------- |
-  | directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
-    
+| type       | file name                    | provider name        | function name             |
+| ---------: | ---------------------------- | -------------------- | ------------------------- |
+| directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
+
   - Use **snake-case** for directive file names. Don't include the namespace prefix.
   - Use **camelCase** for the provider name, since including the namespace prefix.
   - Use **PascalCase** for the function declarations. Don't include the namespace prefix.
 
   *Why?*: Provides the most meaningful way to quickly identify and reference components.
+  
   *Why?*: Only the view and angular are aware of the namespace prefix.
+  
   *Why?*: File names match usage (excluding for the prefix).
 
   **(RECOMMENDED)**
