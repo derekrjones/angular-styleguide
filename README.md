@@ -1876,7 +1876,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   
 | type       | file name                    | provider name        | function name             |
 | ---------: | ---------------------------- | -------------------- | ------------------------- |
-| directive  | avenger-profile.directive.js | 'xxAvengersProfile'  | AvengerProfileDirective() |
+| directive  | avenger-profile.directive.js | 'xxAvengerProfile'  | AvengerProfileDirective() |
 
   - Use **snake-case** for directive file names. Don't include the namespace prefix.
   - Use **camelCase** for the provider name, since including the namespace prefix.
@@ -1893,7 +1893,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   /* avenger-profile.directive.js */
   module.exports = angular
     .module('app.avengers', [])
-    .directive('xxAvengerProfile', require('./avengers-profile.directive'))
+    .directive('xxAvengerProfile', require('./avenger-profile.directive'))
   ```
   
   ```html
@@ -1901,11 +1901,11 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   ```
   
   ```javascript
-  /* avengers-profile.directive.js */
+  /* avenger-profile.directive.js */
   module.exports = function AvengerProfileDirective() {
     return {
       /* ... */
-      template: require('./avengers-profile.html'),
+      template: require('./avenger-profile.html'),
       link: AvengerProfileLink,
       controller: AvengerProfileController
     }
