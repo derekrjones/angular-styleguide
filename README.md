@@ -49,10 +49,10 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   // todo/index.js
   module.exports = angular
     .module('app.todo', [])
-    .factory('TodoFactory', TodoFactory)
+    .factory('TodoStorage', TodoStorageFactory)
     .directive('todoList', TodoListDirective)
   
-  function TodoFactory() { }
+  function TodoStorageFactory() { }
   
   function TodoListDirective() { }
   ```
@@ -63,13 +63,13 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   // todo/index.js
   module.exports = angular
     .module('app.todo', [])
-    .factory('TodoFactory', require('./Todo.factory'))
+    .factory('TodoStorage', require('./TodoStorage.factory'))
     .directive('todoList', require('./todo-list.directive'))
   ```
 
   ```javascript
-  // todo/Todos.js
-  module.exports = function TodoFactory() { }
+  // todo/TodoStorage.factory.js
+  module.exports = function TodoStorageFactory() { }
   ```
 
   ```javascript
@@ -88,7 +88,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   
   *Why?*: Unique names help avoid module name collisions. Separators help define modules and their submodule hierarchy. For example `app` may be your root module while `app.todo` and `app.users` may be modules that are used as dependencies of `app`.
   
-  > Module names should reflect directory structure
+  > Module names and directory structure should reflect each other 
 
   ```
   app
@@ -141,7 +141,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 ### Dependencies
 ###### [Style [Y022](#style-y022)]
 
-  - When adding dependencies, use `require().name` syntax instead of a string.
+  - When adding dependencies, use `require('./relative/path/to/feature/dir').name` syntax instead of a string.
 
   **(AVOID)**
   ```javascript
@@ -160,7 +160,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   module.exports = angular
     .module('app', [
       require('angular-bootstrap').name,    // shimmed using bower name
-      require('./todo').name
+      require('./todo').name                // relative path to feature directory
     ])
   ```
 
@@ -687,7 +687,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   
   *Why?*: Self referencing can break encapsulation as the methods could be replaced.
   
-  *Why?*: This discourages storing state on the interface, and forces you to use getters/setters instead. Setting properties directly on the interface can have unintended side-effects.
+  *Why?*: This discourages storing state on the interface, and encourages you to use getters/setters instead. Setting properties directly on the interface can have unintended side-effects.
 
   **(AVOID)**
   ```javascript
