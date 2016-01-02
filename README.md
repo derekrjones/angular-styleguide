@@ -182,14 +182,14 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   **(AVOID)**
   ```html
   <div ng-controller="CustomerController">
-      {{ name }}
+    {{ name }}
   </div>
   ```
 
   **(RECOMMENDED)**
   ```html
   <div ng-controller="CustomerController as customer">
-      {{ customer.name }}
+    {{ customer.name }}
   </div>
   ```
 
@@ -207,16 +207,16 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   **(AVOID)**
   ```javascript
   function CustomerController($scope) {
-      $scope.name = {};
-      $scope.sendMessage = function() { };
+    $scope.name = {};
+    $scope.sendMessage = function() { };
   }
   ```
 
   **(RECOMMENDED)** - but see next section
   ```javascript
   function CustomerController() {
-      this.name = {};
-      this.sendMessage = function() { };
+    this.name = {};
+    this.sendMessage = function() { };
   }
   ```
 
@@ -230,28 +230,21 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   **(AVOID)**
   ```javascript
   function CustomerController() {
-      this.name = {};
-      this.sendMessage = function() { };
+    this.name = {};
+    this.sendMessage = function() { };
   }
   ```
 
   **(RECOMMENDED)**
   ```javascript
   function CustomerController() {
-      var vm = this;
-      vm.name = {};
-      vm.sendMessage = function() { };
+    var vm = this;
+    vm.name = {};
+    vm.sendMessage = function() { };
   }
   ```
 
-  Note: You can avoid any [jshint](http://www.jshint.com/) warnings by placing the comment above the line of code. However it is not needed when the function is named using UpperCasing, as this convention means it is a constructor function, which is what a controller is in Angular.
-
-  ```javascript
-  /* jshint validthis: true */
-  var vm = this;
-  ```
-
-  Note: When creating watches in a controller using `controller as`, you can watch the `vm.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
+  > Note: When creating watches in a controller using `controller as`, you can watch the `vm.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
 
   ```html
   <input ng-model="vm.title"/>
@@ -259,26 +252,26 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   ```javascript
   function SomeController($scope, $log) {
-      var vm = this;
-      vm.title = 'Some Title';
+    var vm = this;
+    vm.title = 'Some Title';
 
-      $scope.$watch('vm.title', function(current, original) {
-          $log.info('vm.title was %s', original);
-          $log.info('vm.title is now %s', current);
-      });
+    $scope.$watch('vm.title', function(current, original) {
+      $log.info('vm.title was %s', original);
+      $log.info('vm.title is now %s', current);
+    });
   }
   ```
 
-  Note: When working with larger codebases, using a more descriptive name can help ease cognitive overhead & searchability. Avoid overly verbose names that are cumbersome to type.
+  > Note: When working with larger codebases, using a more descriptive name can help ease cognitive overhead & searchability. Avoid overly verbose names that are cumbersome to type.
 
   **(AVOID)**
   ```html
-  <input ng-model="customerProductItemVm.text">
+  <input ng-model="customerProductItem.title">
   ```
 
   **(RECOMMENDED)**
   ```html
-  <input ng-model="productVm.id">
+  <input ng-model="product.title">
   ```
 
 ### Bindable Members Up Top
@@ -286,91 +279,82 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Place bindable members at the top of the controller, alphabetized, and not spread through the controller code.
 
-    *Why?*: Placing bindable members at the top makes it easy to read and helps you instantly identify which members of the controller can be bound and used in the View.
+  *Why?*: Placing bindable members at the top makes it easy to read and helps you instantly identify which members of the controller can be bound and used in the View.
 
-    *Why?*: Setting anonymous functions in-line can be easy, but when those functions are more than 1 line of code they can reduce the readability. Defining the functions below the bindable members (the functions will be hoisted) moves the implementation details down, keeps the bindable members up top, and makes it easier to read.
+  *Why?*: Setting anonymous functions in-line can be easy, but when those functions are more than 1 line of code they can reduce the readability. Defining the functions below the bindable members (the functions will be hoisted) moves the implementation details down, keeps the bindable members up top, and makes it easier to read.
 
   **(AVOID)**
   ```javascript
   function SessionsController() {
-      var vm = this;
-
-      vm.gotoSession = function() {
-        /* ... */
-      };
-      vm.refresh = function() {
-        /* ... */
-      };
-      vm.search = function() {
-        /* ... */
-      };
-      vm.sessions = [];
-      vm.title = 'Sessions';
+    var vm = this;
+    vm.gotoSession = function() {
+      /* ... */
+    };
+    vm.refresh = function() {
+      /* ... */
+    };
+    vm.search = function() {
+      /* ... */
+    };
+    vm.sessions = [];
+    vm.title = 'Sessions';
   }
   ```
 
   **(RECOMMENDED)**
   ```javascript
   function SessionsController() {
-      var vm = this;
+    var vm = this;
+    vm.gotoSession = gotoSession;
+    vm.refresh = refresh;
+    vm.search = search;
+    vm.sessions = [];
+    vm.title = 'Sessions';
 
-      vm.gotoSession = gotoSession;
-      vm.refresh = refresh;
-      vm.search = search;
-      vm.sessions = [];
-      vm.title = 'Sessions';
+    function gotoSession() {
+      /* */
+    }
 
-      ////////////
+    function refresh() {
+      /* */
+    }
 
-      function gotoSession() {
-        /* */
-      }
-
-      function refresh() {
-        /* */
-      }
-
-      function search() {
-        /* */
-      }
+    function search() {
+      /* */
+    }
   }
   ```
-
-    ![Controller Using "Above the Fold"](https://raw.githubusercontent.com/johnpapa/angular-styleguide/master/assets/above-the-fold-1.png)
-
-  Note: If the function is a 1 liner consider keeping it right up top, as long as readability is not affected.
+  > Note: If the function is a 1 liner consider keeping it right up top, as long as readability is not affected.
 
   **(AVOID)**
   ```javascript
   function SessionsController(data) {
-      var vm = this;
-
-      vm.gotoSession = gotoSession;
-      vm.refresh = function() {
-          /**
-           * lines
-           * of
-           * code
-           * affects
-           * readability
-           */
-      };
-      vm.search = search;
-      vm.sessions = [];
-      vm.title = 'Sessions';
+    var vm = this;
+    vm.gotoSession = gotoSession;
+    vm.refresh = function() {
+        /**
+         * lines
+         * of
+         * code
+         * affects
+         * readability
+         */
+    };
+    vm.search = search;
+    vm.sessions = [];
+    vm.title = 'Sessions';
   }
   ```
 
   **(RECOMMENDED)**
   ```javascript
   function SessionsController(sessionDataService) {
-      var vm = this;
-
-      vm.gotoSession = gotoSession;
-      vm.refresh = sessionDataService.refresh; // 1 liner is OK
-      vm.search = search;
-      vm.sessions = [];
-      vm.title = 'Sessions';
+    var vm = this;
+    vm.gotoSession = gotoSession;
+    vm.refresh = sessionDataService.refresh; // 1 liner is OK
+    vm.search = search;
+    vm.sessions = [];
+    vm.title = 'Sessions';
   }
   ```
 
@@ -379,70 +363,70 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Use function declarations to hide implementation details. Keep your bindable members up top. When you need to bind a function in a controller, point it to a function declaration that appears later in the file. This is tied directly to the section Bindable Members Up Top. For more details see [this post](http://www.johnpapa.net/angular-function-declarations-function-expressions-and-readable-code).
 
-    *Why?*: Placing bindable members at the top makes it easy to read and helps you instantly identify which members of the controller can be bound and used in the View. (Same as above.)
+  *Why?*: Placing bindable members at the top makes it easy to read and helps you instantly identify which members of the controller can be bound and used in the View. (Same as above.)
 
-    *Why?*: Placing the implementation details of a function later in the file moves that complexity out of view so you can see the important stuff up top.
+  *Why?*: Placing the implementation details of a function later in the file moves that complexity out of view so you can see the important stuff up top.
 
-    *Why?*: Function declaration are hoisted so there are no concerns over using a function before it is defined (as there would be with function expressions).
+  *Why?*: Function declaration are hoisted so there are no concerns over using a function before it is defined (as there would be with function expressions).
 
-    *Why?*: You never have to worry with function declarations that moving `var a` before `var b` will break your code because `a` depends on `b`.
+  *Why?*: You never have to worry with function declarations that moving `var a` before `var b` will break your code because `a` depends on `b`.
 
-    *Why?*: Order is critical with function expressions
+  *Why?*: Order is critical with function expressions
 
   **(AVOID)** Using function expressions
   ```javascript
-  function AvengersController(avengersService, logger) {
-      var vm = this;
-      vm.avengers = [];
-      vm.title = 'Avengers';
+  function AvengersController(Avengers, Logger) {
+    var vm = this;
+    vm.avengers = [];
+    vm.title = 'Avengers';
 
-      var activate = function() {
-          return getAvengers().then(function() {
-              logger.info('Activated Avengers View');
-          });
-      }
+    var activate = function() {
+      return getAvengers()
+        .then(function() {
+          Logger.info('Activated Avengers View');
+        });
+    }
 
-      var getAvengers = function() {
-          return avengersService.getAvengers().then(function(data) {
-              vm.avengers = data;
-              return vm.avengers;
-          });
-      }
+    var getAvengers = function() {
+      return Avengers.fetch()
+        .then(function(data) {
+          vm.avengers = data;
+          return vm.avengers;
+        });
+    }
 
-      vm.getAvengers = getAvengers;
+    vm.getAvengers = getAvengers;
 
-      activate();
+    activate();
   }
   ```
 
   Notice that the important stuff is scattered in the preceding example. In the example below, notice that the important stuff is up top. For example, the members bound to the controller such as `vm.avengers` and `vm.title`. The implementation details are down below. This is just easier to read.
 
+  **(RECOMMENDED)**
   ```javascript
-  /*
-   * recommend
-   * Using function declarations
-   * and bindable members up top.
-   */
-  function AvengersController(avengersService, logger) {
-      var vm = this;
-      vm.avengers = [];
-      vm.getAvengers = getAvengers;
-      vm.title = 'Avengers';
+  function AvengersController(Avengers, Logger) {
+    var vm = this;
+    vm.avengers = [];
+    vm.getAvengers = getAvengers;
+    vm.title = 'Avengers';
 
-      activate();
+    activate();
 
-      function activate() {
-          return getAvengers().then(function() {
-              logger.info('Activated Avengers View');
-          });
-      }
-
-      function getAvengers() {
-          return avengersService.getAvengers().then(function(data) {
-              vm.avengers = data;
-              return vm.avengers;
-          });
-      }
+    function activate() {
+      return getAvengers()
+        .then(function() {
+          Logger.info('Activated Avengers View');
+        });
+    }
+    
+    function getAvengers() {
+      return Avengers.fetch()
+        .then(function(data) {
+          vm.avengers = data;
+          return vm.avengers;
+        });
+    }
   }
   ```
 
@@ -451,57 +435,59 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Defer logic in a controller by delegating to services and factories.
 
-    *Why?*: Logic may be reused by multiple controllers when placed within a service and exposed via a function.
+  *Why?*: Logic may be reused by multiple controllers when placed within a service and exposed via a function.
 
-    *Why?*: Logic in a service can more easily be isolated in a unit test, while the calling logic in the controller can be easily mocked.
+  *Why?*: Logic in a service can more easily be isolated in a unit test, while the calling logic in the controller can be easily mocked.
 
-    *Why?*: Removes dependencies and hides implementation details from the controller.
+  *Why?*: Removes dependencies and hides implementation details from the controller.
 
-    *Why?*: Keeps the controller slim, trim, and focused.
+  *Why?*: Keeps the controller slim, trim, and focused.
 
   **(AVOID)**
   ```javascript
   function OrderController($http, $q, config, userInfo) {
-      var vm = this;
-      vm.checkCredit = checkCredit;
-      vm.isCreditOk;
-      vm.total = 0;
-
-      function checkCredit() {
-          var settings = {};
-          // Get the credit service base URL from config
-          // Set credit service required headers
-          // Prepare URL query string or data object with request data
-          // Add user-identifying info so service gets the right credit limit for this user.
-          // Use JSONP for this browser if it doesn't support CORS
-          return $http.get(settings)
-              .then(function(data) {
-               // Unpack JSON data in the response object
-                 // to find maxRemainingAmount
-                 vm.isCreditOk = vm.total <= maxRemainingAmount
-              })
-              .catch(function(error) {
-                 // Interpret error
-                 // Cope w/ timeout? retry? try alternate service?
-                 // Re-reject with appropriate error for a user to see
-              });
-      };
+    var vm = this;
+    vm.checkCredit = checkCredit;
+    vm.isCreditOk;
+    vm.total = 0;
+  
+    function checkCredit() {
+      var settings = {};
+      // Get the credit service base URL from config
+      // Set credit service required headers
+      // Prepare URL query string or data object with request data
+      // Add user-identifying info so service gets the right credit limit for this user.
+      // Use JSONP for this browser if it doesn't support CORS
+      return $http.get(settings)
+        .then(function(data) {
+          // Unpack JSON data in the response object
+          // to find maxRemainingAmount
+          vm.isCreditOk = vm.total <= maxRemainingAmount
+        })
+        .catch(function(error) {
+          // Interpret error
+          // Cope w/ timeout? retry? try alternate service?
+          // Re-reject with appropriate error for a user to see
+        });
+    };
   }
   ```
 
   **(RECOMMENDED)**
   ```javascript
   function OrderController(creditService) {
-      var vm = this;
-      vm.checkCredit = checkCredit;
-      vm.isCreditOk;
-      vm.total = 0;
-
-      function checkCredit() {
-         return creditService.isOrderTotalOk(vm.total)
-            .then(function(isOk) { vm.isCreditOk = isOk; })
-            .catch(showError);
-      };
+    var vm = this;
+    vm.checkCredit = checkCredit;
+    vm.isCreditOk;
+    vm.total = 0;
+  
+    function checkCredit() {
+      return creditService.isOrderTotalOk(vm.total)
+        .then(function(isCreditOk) { 
+          vm.isCreditOk = isCreditOk; 
+        })
+        .catch(showError);
+    };
   }
   ```
 
@@ -510,29 +496,27 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   - Define a controller for a view, and try not to reuse the controller for other views. Instead, move reusable logic to factories and keep the controller simple and focused on its view.
 
-    *Why?*: Reusing controllers with several views is brittle and good end-to-end (e2e) test coverage is required to ensure stability across large applications.
+  *Why?*: Reusing controllers with several views is brittle and good end-to-end (e2e) test coverage is required to ensure stability across large applications.
 
 ### Assigning Controllers
 ###### [Style [Y038](#style-y038)]
 
   - When a controller must be paired with a view and either component may be re-used by other controllers or views, define controllers along with their routes.
 
-    Note: If a View is loaded via another means besides a route, then use the `ng-controller="Avengers as vm"` syntax.
+  > Note: If a View is loaded via another means besides a route, then use the `ng-controller="Avengers as vm"` syntax.
 
-    *Why?*: Pairing the controller in the route allows different routes to invoke different pairs of controllers and views. When controllers are assigned in the view using [`ng-controller`](https://docs.angularjs.org/api/ng/directive/ngController), that view is always associated with the same controller.
+  > Prefer directives over using `ng-controller`. Use the `component` features with the new [angular router](https://github.com/angular/router)
+  
+  *Why?*: Pairing the controller in the route allows different routes to invoke different pairs of controllers and views. When controllers are assigned in the view using [`ng-controller`](https://docs.angularjs.org/api/ng/directive/ngController), that view is always associated with the same controller.
 
   **(AVOID)** when using with a route and dynamic pairing is desired
  ```javascript
-  // route-config.js
-  angular
-      .module('app')
-      .config(config);
-
-  function config($routeProvider) {
-      $routeProvider
-          .when('/avengers', {
-            templateUrl: 'avengers.html'
-          });
+  /* route-config.js */
+  module.exports = function config($routeProvider) {
+    $routeProvider
+      .when('/avengers', {
+        template: require('./avengers.html')
+      });
   }
   ```
 
@@ -544,19 +528,14 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   **(RECOMMENDED)**
   ```javascript
-
-  // route-config.js
-  angular
-      .module('app')
-      .config(config);
-
-  function config($routeProvider) {
-      $routeProvider
-          .when('/avengers', {
-              templateUrl: 'avengers.html',
-              controller: 'Avengers',
-              controllerAs: 'vm'
-          });
+  /* route-config.js */
+  module.exports = function config($routeProvider) {
+    $routeProvider
+      .when('/avengers', {
+        template: require('./avengers.html'),
+        controller: require('./Avengers.controller)',
+        controllerAs: 'vm'
+      });
   }
   ```
 
