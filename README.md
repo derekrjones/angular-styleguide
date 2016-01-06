@@ -1833,7 +1833,8 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   /* index.js */
   module.exports = angular
     .module('app.avengers', [])
-    .controller('Avengers', require('./Avengers.factory'))
+    .factory('Avengers', require('./Avengers.factory'))
+    .controller('AvengersController', require('./Avengers.controller'))
   ```
     
   ```javascript
