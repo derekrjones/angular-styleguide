@@ -1115,7 +1115,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
 
   > You can also name the controller when you inject it into the link function and access directive attributes as properties of the controller.
 
-
+### Directives and BindToController
 ###### [Style [Y076](#style-y076)]
 
   - Use `bindToController = true` when using `controller as` syntax with a directive when you want to bind the outer scope to the directive's controller's scope.
