@@ -1008,13 +1008,11 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   module.exports = function CalendarRangeDirective() {
     return {
       restrict: 'C',
-      link: link,
-      template: require('./calendar-range.html')
+      template: require('./calendar-range.html'),
+      link: function(scope, element, attrs) {
+        /* */
+      }
     };
-  
-    function link(scope, element, attrs) {
-      /* */
-    }
   }
   ```
 
@@ -1027,13 +1025,11 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   module.exports = function CalendarRangeDirective() {
     return {
       restrict: 'E',
-      link: link,
-      template: require('./calendar-range.html')
+      template: require('./calendar-range.html'),
+      link: function(scope, element, attrs) {
+        /* */
+      }
     };
-  
-    function link(scope, element, attrs) {
-      /* */
-    }
   }
   ```
   
@@ -1046,12 +1042,10 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   module.exports = function CalendarRangePopUpDirective() {
     return {
       restrict: 'A',
-      link: link
+      link: function(scope, element, attrs) {
+        /* */
+      }
     };
-  
-    function link(scope, element, attrs) {
-      /* */
-    }
   }
   ```
 
@@ -1082,23 +1076,21 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
         max: '='
       },
       template: require('./min-max-input.html'),
-      link: MinMaxInputLink,
-      controller: MinMaxInputController
-    }
-  
-    function MinMaxInputLink(scope, el, attr, vm) {
-      // with controllerAs we do not bind directly to scope
-      console.log('LINK: scope.min = %s *** should be undefined', scope.min);
-      console.log('LINK: scope.max = %s *** should be undefined', scope.max);
-  
-      // but we can access vm via scope
-      console.log('LINK: scope.vm.min = %s', scope.vm.min);
-      console.log('LINK: scope.vm.max = %s', scope.vm.max);
-  
-      // and also access vm via the 4th parameter of the link function
-      console.log('LINK: vm.min = %s', vm.min);
-      console.log('LINK: vm.max = %s', vm.max);
-    }
+      controller: MinMaxInputController,
+      link: function(scope, element, attrs, vm) {
+        // with controllerAs we do not bind directly to scope
+        console.log('LINK: scope.min = %s *** should be undefined', scope.min);
+        console.log('LINK: scope.max = %s *** should be undefined', scope.max);
+
+        // but we can access vm via scope
+        console.log('LINK: scope.vm.min = %s', scope.vm.min);
+        console.log('LINK: scope.vm.max = %s', scope.vm.max);
+
+        // and also access vm via the 4th parameter of the link function
+        console.log('LINK: vm.min = %s', vm.min);
+        console.log('LINK: vm.max = %s', vm.max);
+      }
+    };
   }
   
   function MinMaxInputController($scope) {
@@ -1886,14 +1878,12 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     return {
       /* ... */
       template: require('./avenger-profile.html'),
-      link: AvengerProfileLink,
-      controller: AvengerProfileController
-    }
-  
-    function AvengerProfileLink(scope, element, attr, controller) { }
+      controller: AvengerProfileController,
+      link: function(scope, element, attrs, ctrl) { }
+    };
   }
   
-  function AvengerProfileController(scope, element, attr, controller) { }
+  function AvengerProfileController(scope, element, attrs, ctrl) { }
   ```
 
 ### Modules
