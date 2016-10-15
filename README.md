@@ -742,7 +742,7 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
   
   > **use the verb `fetch` instead of `get`** to make it clear this is an async call that returns a promise.
   
-  > **return a deferred promise instead of $http promise**. The consumer should not have any knowledge of how the call was made. This ensures that if we replace $http with some other method there will be no side-effects.
+  > **return a $q promise instead of $http promise**. The reciever of the return value should not have any knowledge of how the call was made. This ensures that if we replace $http with some other method there will be no side-effects. **The simplest way to convert a $http promise to a $q promise is with `.then(...)`**
 
   **(RECOMMENDED)**
   ```javascript
@@ -752,18 +752,13 @@ based on John Papa's **awesome** [Angular Style Guide](https://github.com/johnpa
     };
   
     function fetch() {
-      var deferred = $q.defer();
-  
-      $http.get('/api/maa')
-        .then(function(response) {
-          var res = response.data.results;
-          deferred.resolve(res);
-        }, function(error) {
-          Logger.error('XHR Failed for getAvengers.' + error.data);
-          deferred.reject(error);
+      return $http.get('/api/maa')
+        .then(function(res) {
+          return _.get(res, 'data.results');
+        }, function(res) {
+          Logger.error('XHR Failed for getAvengers.' + res.data);
+          return $q.reject(res.data);
         });
-  
-      return deferred.promise;
     }
   }
   ```
